@@ -1,0 +1,40 @@
+version: '3'
+
+services:    
+    influxdb:
+        image: influxdb
+        ports:
+          - 8086:8086
+        volumes:
+          - influxdb_data:/var/lib/influxdb
+        environment:
+          - INFLUXDB_DB=iescelia_db
+          - INFLUXDB_ADMIN_USER=root
+          - INFLUXDB_ADMIN_PASSWORD=root
+
+    telegraf:
+        image: telegraf
+        volumes:
+            - ./telegraf:/etc/telegraf
+        depends_on:
+            - influxdb    
+
+    grafana:
+        image: grafana/grafana
+        ports:
+            - 3000:3000
+        volumes:
+            - grafana_data:/var/lib/grafana
+            - /grafana-provisioning/:/etc/grafana/provisioning
+        depends_on:
+            - influxdb
+
+
+
+
+
+volumes: 
+    mosquitto_data:
+    mosquitto_log: 
+    influxdb_data:
+    grafana_data:
